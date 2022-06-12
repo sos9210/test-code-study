@@ -5,7 +5,9 @@ import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.junit.jupiter.api.condition.EnabledOnOs;
 import org.junit.jupiter.api.condition.OS;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ParameterContext;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.aggregator.AggregateWith;
 import org.junit.jupiter.params.aggregator.ArgumentsAccessor;
@@ -34,7 +36,12 @@ import static org.junit.jupiter.api.Assumptions.assumingThat;
 //@Order라는 애노테이션을 사용해서 각 메서드마다 순서를 정한다
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)  //특정 순서대로 테스트 메서드를 실행하고 싶을때 사용한다
 //각 메서드마다 상태를 공유하고 순서를 정해야한다면 @TestInstance와 @TestMethodOrder를 같이 사용한다.
+//@ExtendWith(FindSlowTestExtension.class) //선언적인 확장 등록 방법(이 방법은 디폴트 생성자로만 생성되기때문에 커스텀 생성할수가없다)
 class StudyTest {
+
+    //생성자를 이용한 확장 등록 방법
+    @RegisterExtension
+    static FindSlowTestExtension findSlowTestExtension = new FindSlowTestExtension(1000L);
 
     @Test
     @Order(2)
@@ -87,9 +94,10 @@ class StudyTest {
     @DisplayName("2개이상의 인자로 받아본다.")
     @ParameterizedTest(name = "{index} {displayName} meesage={0}")
     @CsvSource({"10, '자바 스터디'","20,'스프링'"}) //2개이상의 인자를 직접받음
-    void parameterizedCsvTest(Integer limit, String name){
+    void parameterizedCsvTest(Integer limit, String name) throws InterruptedException {
         Study study = new Study(limit, name);
         System.out.println(study);
+        Thread.sleep(1005L); //확장 모델 적용 테스트
     }
 
     @DisplayName("ArgumentsAccessor를 사용해서 받아본다.")
