@@ -10,4 +10,8 @@ public interface MemberService {
     Optional<Member> findById(Long memberId);
 
     void validate(Long memberId);
+
+    void notify(Study any);
+
+    void notify(Member member);
 }
