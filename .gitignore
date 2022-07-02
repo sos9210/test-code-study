@@ -183,3 +183,4 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,intellij,java,maven
+apache-jmeter-5.5/**
